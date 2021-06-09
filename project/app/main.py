@@ -1,23 +1,26 @@
-import os
-from fastapi import FastAPI, Depends
-from app.config import get_settings, Settings
-from tortoise.contrib.fastapi import register_tortoise
+from app.db import init_db
+from fastapi import FastAPI
+from app.api import ping
+from app.api import summaries
+from app.config import log
 
-app = FastAPI()
+def create_app() -> FastAPI:
+    app = FastAPI()
 
-# This register tortoise models and initialize db to fastapi
-register_tortoise(
-    app,
-    db_url=get_settings().database_url,
-    modules={"models": ["app.models.tortoise"]},
-    generate_schemas=True,
-    add_exception_handlers=True
-)
+    app.include_router(ping.router)
+    app.include_router(summaries.router, prefix="/summaries", tags=["summaries"])
+    
+    return app
 
-@app.get("/ping")
-async def ping(settings: Settings = Depends(get_settings)):
-    return {
-        "ping": "pong",
-        "environment": settings.environment,
-        "testing": settings.testing,
-    }
+app = create_app()
+
+# Create an event start app
+@app.on_event("startup")
+async def startup_event():
+    log.info("Starting up...")
+    init_db(app)
+
+# Register an event for shutdown app
+@app.on_event("shutdown")
+async def shutdown_event():
+    log.info("Shutting down...")
