@@ -1,8 +1,7 @@
-from fastapi import FastAPI
-
 from app.api import ping, summaries
 from app.config import log
 from app.db import init_db
+from fastapi import FastAPI
 
 
 def create_app() -> FastAPI:
