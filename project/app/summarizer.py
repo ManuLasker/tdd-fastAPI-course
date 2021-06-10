@@ -1,5 +1,3 @@
-import asyncio
-
 import nltk
 from app.models.tortoise import TextSummary
 from newspaper import Article
