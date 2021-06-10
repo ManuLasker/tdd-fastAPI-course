@@ -224,7 +224,7 @@ def test_update_summary_incorrect_id(
 
 def test_update_summary_invalid_keys(test_app_with_db: TestClient):
     response = test_app_with_db.put(
-        f"/summaries/1/",
+        "/summaries/1/",
         data=json.dumps({"url": "invalid://url", "summary": "updated!"}),
     )
     assert response.status_code == 422
