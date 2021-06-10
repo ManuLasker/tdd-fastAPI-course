@@ -1,4 +1,4 @@
-name: Continours Integration and Delivary
+name: Continuous Integration and Delivery
 
 on: [push]
 
