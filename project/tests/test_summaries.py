@@ -206,7 +206,7 @@ def test_update_summary(test_app_with_db: TestClient):
         ],
     ],
 )
-def test_update_summary_incorrect_id(
+def test_update_summary_invalid(
     test_app_with_db: TestClient,
     summary_id: int,
     payload: Dict[str, Any],
@@ -222,7 +222,7 @@ def test_update_summary_incorrect_id(
     assert response.json()["detail"] == detail
 
 
-def test_update_summary_invalid_keys(test_app_with_db: TestClient):
+def test_update_summary_invalid_url(test_app_with_db: TestClient):
     response = test_app_with_db.put(
         "/summaries/1/",
         data=json.dumps({"url": "invalid://url", "summary": "updated!"}),
