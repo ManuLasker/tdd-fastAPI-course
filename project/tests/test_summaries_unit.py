@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Union
 
 import pytest
-from app.api import crud
+from app.api import crud, summaries
 from pytest import MonkeyPatch
 from starlette.testclient import TestClient
 
@@ -15,6 +15,10 @@ def test_create_summary(test_app: TestClient, monkeypatch: MonkeyPatch):
     async def mock_post(payload):
         return 1
 
+    async def mock_generate_summary(summary_id, url):
+        pass
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
     monkeypatch.setattr(crud, "post", mock_post)
     response = test_app.post("/summaries/", data=json.dumps(test_request_payload))
 
