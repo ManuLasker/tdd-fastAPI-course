@@ -1,10 +1,12 @@
 import os
 from typing import Generator
+
 import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
+
+from app.config import Settings, get_settings
 from app.main import create_app
-from app.config import get_settings, Settings
 
 
 def get_settings_override() -> Settings:
@@ -17,11 +19,12 @@ def test_app() -> Generator:
     # override app dependencei get_settings with test settings define previously
     app = create_app()
     app.dependency_overrides[get_settings] = get_settings_override
-    
+
     with TestClient(app) as test_client:
         # testing
         yield test_client
     # tear down
+
 
 @pytest.fixture(scope="module")
 def test_app_with_db() -> Generator:
@@ -33,7 +36,7 @@ def test_app_with_db() -> Generator:
         db_url=get_settings_override().database_url,
         modules={"models": ["app.models.tortoise"]},
         generate_schemas=True,
-        add_exception_handlers=True
+        add_exception_handlers=True,
     )
     # create test client
     with TestClient(app) as test_client:
